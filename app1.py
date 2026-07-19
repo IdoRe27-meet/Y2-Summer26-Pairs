@@ -3,11 +3,11 @@ import os
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
-load_dotenv()
-
-client = Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY')) # setting up the API key for the Anthropic client
 
 def run_chat():
+    load_dotenv()
+
+    client = Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY')) # setting up the API key for the Anthropic client
 
     user_goal = input("Type your goal for this chat: ")    
 
@@ -53,6 +53,5 @@ def run_chat():
         print(f'Assistant: {reply}')
         history.append({'role': 'assistant', 'content': reply})
 
-run_chat()
 
 
