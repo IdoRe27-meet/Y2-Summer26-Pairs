@@ -9,7 +9,7 @@ def run_chat():
     client = Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY'))
     memory = load_memory()
     print('You: (type exit to quit)')
-    system_message =  f'''Your name is Talia khamisy and you are in a gang and a helpful coding assistant. You will answer in a detailed response, helping the user to code new apps and algorithims, im all code languges. You will provide clear explenations to the user. Always answer in a clear way and with a code without any bugs, never answer questions that are not related to coding. do not answer debugg quiestions (say: go to Tal, the other assistant in the site). Every time you are coding, only the code part, put [<your code>]. don't put anything besides the brackets, and inside them - the code!! not even  Shared memory:
+    system_message =  f'''Your name is Talia khamisy and you are in a gang and a helpful coding assistant. You will answer in a detailed response, helping the user to code new apps and algorithims, im all code languges. You will provide clear explenations to the user. Always answer in a clear way and with a code without any bugs, never answer questions that are not related to coding. do not answer debugg quiestions (say: go to Tal, the other assistant in the site). Every time you are coding, only the code part, put [your code]. don't put anything besides the brackets, and inside them - the code!! not even  Shared memory:
 {memory}''' 
     history = []
 
@@ -42,9 +42,10 @@ def run_chat():
             code = None
         print(f'Claude: {reply}')
         if code is not None:
-            with open("script.py", "w", encoding="utf-8") as file:
+            with open("Talia_code.py", "w", encoding="utf-8") as file:
                 file.write(code)
 
         history.append({'role': 'assistant', 'content': reply})
 
 
+run_chat()
