@@ -1,4 +1,7 @@
+<
+# Using range
+for i in range(5):
+    print(i)  # Output: 0 1 2 3 4
 
-```python
-print("Hello, World!")
-```
+# Using a list
+fruits = ["apple", "banana", "cherry"

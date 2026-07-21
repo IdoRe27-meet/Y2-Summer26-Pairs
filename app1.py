@@ -2,17 +2,29 @@
 import os
 from anthropic import Anthropic
 from dotenv import load_dotenv
-
+from shared_memory import load_memory, save_memory
 
 def run_chat():
     load_dotenv()
 
     client = Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY')) # setting up the API key for the Anthropic client
+    memory = load_memory()
 
     user_goal = input("Type your goal for this chat: ")    
 
     print('You: (type exit to quit)')
-    system_message = f"Your name is Tal, you are a helful coding debugger, answer brifely and be focus on the bug, it's cause and how to solve it. You start you response with explaining the bug and then you give him possible solutions. Never say something you don't know and present it as true info. Answer only q's about debbuging and code, don't answer other questions. Also, it is important for you to know that the user has a goal for tosy, and you shold hellp him achive that (it it is standing in the instructions erlier): {user_goal}. also, if they ask you a question that is not related to coding actual apps and not debugging, you should say: 'go to Talia' (The other assistant in the site)."
+    system_message =f'''Your name is Tal, you are a helful coding debugger, 
+    answer brifely and be focus on the bug, it's cause and how to solve it.
+     
+     You start you response with explaining the bug and then you give him possible solutions.
+      
+     Never say something you don't know and present it as true info. 
+     
+     Answer only q's about debbuging and code, don't answer other questions. 
+     Also, it is important for you to know that the user has a goal for tosy,
+       and you shold hellp him achive that (it it is standing in the instructions erlier): {user_goal}.
+         also, if they ask you a question that is not related to coding actual apps and not debugging, you should say: 'go to Talia' (The other assistant in the site ).
+         Shared memory from the other agent:{memory}'''
     history = []
     message_num = 1
     while True:
@@ -28,7 +40,7 @@ def run_chat():
         elif user_input.lower()=='/summary': 
             summary = client.messages.create(
                 model='claude-haiku-4-5-20251001',
-                max_tokens=300,
+                max_tokens=2000,
                 temperature=0.7,
                 system=system_message,
                 messages=history + [{'role': 'user', 'content': 'Please provide a summary of our conversation so far.'}]
@@ -40,16 +52,22 @@ def run_chat():
         history.append({'role': 'user', 'content': user_input})
        
         message_num += 1 # Counting the number of messages in the conversation
+        memory = load_memory()
 
         response = client.messages.create(   #API call and setting the parameters for the response
             model='claude-haiku-4-5-20251001',
-            max_tokens=300,
+            max_tokens=2000,
             temperature=0.7,
             system=system_message,
             messages=history
         )
         
         reply = response.content[0].text
+        save_memory({
+            "last_user_message": user_input,
+            "last_reply": reply,
+            "goal": user_goal
+        })
         print(f'Assistant: {reply}')
         history.append({'role': 'assistant', 'content': reply})
 
